@@ -160,7 +160,7 @@
   (fn [& args]
     (apply f (map #(if (nil? %) v %) args))))
 
- (defn ->vec [v] (if (sequential? v) (vec v) [v]))
+(defn ->vec [v] (if (sequential? v) (vec v) [v]))
 
 (defn y
   [names & {:keys [s f o d l ->str] :or {s [:name :gender :o]
