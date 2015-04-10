@@ -189,6 +189,42 @@
                     l-results)]
       results)))
 
+(defn f-
+  [& args]
+  (fn [v]
+    (loop [v+ v
+           a args]
+      (if (not-empty a)
+        (let [a1 (first a)]
+          (recur (cond
+                  (fn? a1) (a1 v+)
+                  (vector? a1) (apply (first a1) v+ (rest a1))
+                  true (get v+ a1))
+                 (rest a)))
+        v+))))
+
+(defn o-
+  [& args]
+  (fn [n]
+    (get-in n args)))
+
+(def p- partial)
+
+(defn m-
+  [f]
+  (fn [args]
+    (map f args)))
+
+(defn a-
+  [f & args]
+  (fn [v]
+    (apply f (into v args))))
+
+(def n (:names @state))
+
+(def n1 (first n))
+
+(def n1-3 (take 3 n))
 
 #_(y n :o #(-> % second :yrs (get 2001) :rank) :l 30)
 #_(y n :o #(-> % second :yrs-v first second :yr) :l 30)
