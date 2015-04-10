@@ -226,8 +226,18 @@
 
 (def n1-3 (take 3 n))
 
-#_(y n :o #(-> % second :yrs (get 2001) :rank) :l 30)
-#_(y n :o #(-> % second :yrs-v first second :yr) :l 30)
+(def fst-yr (f- 1 :yrs-v first :yr))
+
+#_(q n
+:s [:name :gender (f- :v fst-yr) :o (f- :v 1 :yrs 2001 :rank)]
+
+     :o #((nil-> 0 -) (get-in % [1 :yrs 2004 :pct]) (get-in % [1 :yrs 2000 :pct]) )
+     :d (nil-> 0 <)
+     :l 10 :->str false)
+
+#_(q n :o #(-> % second :yrs-v first :yr) :l 30 :->str false)
+
+#_ (q n)
 
 (defn get-yrs [n-rec yr1 & [yr2]]
   (filter #((set (range yr1 (inc (or yr2 yr1)))) (first %))
@@ -238,11 +248,6 @@
 
 
 (vals {:a 2})
-(y n :s [identity] :o (fn [x] (println (-> x second :yrs (get 2001) :rank)) 4))
+(q n :s [identity] :o (fn [x] (println (-> x second :yrs (get 2001) :rank)) 4))
 
-(y n :s [identity] :o (fn [x] (-> x second :yrs (get 2001) :rank)))
-
-
-(def n (:names @state))
-
-(def n1 (first n))
+(q n :s [identity] :o (fn [x] (-> x second :yrs (get 2001) :rank)))
