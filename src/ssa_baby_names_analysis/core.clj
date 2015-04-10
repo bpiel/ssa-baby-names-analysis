@@ -229,11 +229,11 @@
 (def fst-yr (f- 1 :yrs-v first :yr))
 
 #_(q n
-:s [:name :gender (f- :v fst-yr) :o (f- :v 1 :yrs 2001 :rank)]
-
-     :o #((nil-> 0 -) (get-in % [1 :yrs 2004 :pct]) (get-in % [1 :yrs 2000 :pct]) )
+     :s [:name :gender :o (f- :v fst-yr)]
+     :f (every-pred (f- fst-yr < 1900) (f- 1 :yrs-v last :yr > 2000))
+     :o (f- 1 :pct (m- :pct) (a- max))
      :d (nil-> 0 <)
-     :l 10 :->str false)
+     :l 30 :->str false)
 
 #_(q n :o #(-> % second :yrs-v first :yr) :l 30 :->str false)
 
