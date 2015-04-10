@@ -104,10 +104,15 @@
                (apply merge-with
                       (partial merge-with merge)))]
     (reduce (fn [agg k]
-              (println k)
-              (assoc-in agg [k :yrs-v] (->>(get x k)
-                                           :yrs
-                                            (sort (make-sort-fn < [1 :yr])) ) ))
+              (let [yrs (get-in x [k :yrs])
+                    sort-yrs-fn #(->> yrs
+                                      (map second)
+                                      (sort (make-sort-fn % [%2])))]
+
+                (-> agg
+                    (assoc-in [k :yrs-v] (sort-yrs-fn < :yr))
+                    (assoc-in [k :rank] (sort-yrs-fn < :rank))
+                    (assoc-in [k :pct] (sort-yrs-fn > :pct)))))
             x
             (keys x))))
 
