@@ -162,7 +162,7 @@
 
 (defn ->vec [v] (if (sequential? v) (vec v) [v]))
 
-(defn y
+(defn q
   [names & {:keys [s f o d l ->str] :or {s [:name :gender :o]
                                          f (constantly true)
                                          o nil
@@ -170,13 +170,12 @@
                                          l 10
                                          ->str true}}]
   (let [o+ (or o (constantly nil))
-        o-fn #(d (o %) (o %2))
+        o-fn #(d (o+ %) (o+ %2))
         view-fn (fn [v]
-                  {:o (o v)
+                  {:o (o+ v)
                    :v v
                    :name (-> v first first)
                    :gender (-> v first second)})]
-
     (let [f-results (filter
                      (apply every-pred (->vec f))
                      names)
