@@ -124,7 +124,7 @@
      (println 1)
      (read-state)
      (println 2)
-     (doseq [year (range 2000 2004)]
+     (doseq [year (range 1880 2013)]
        (fetch-html-for-year year))
      (println 3)
      (swap! state assoc :names (process-htmls (:html @state)))
