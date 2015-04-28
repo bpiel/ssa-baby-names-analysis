@@ -131,6 +131,7 @@
      (write-state)
      (println "done!"))
 
+(-> @state :names keys)
 
 
 
@@ -220,22 +221,62 @@
   (fn [v]
     (apply f (into v args))))
 
+(defn dbg-catch [f]
+  (fn [& args]
+    (try
+      (apply f args)
+      (catch Exception e (do (println "****** args during exception:")
+                           (clojure.pprint/pprint args)
+                             (throw e))))))
+
+
+(defn sum-abs-diff
+  [a b]
+  (->> (interleave a b)
+       (partition 2)
+       (map (fn [[c d]] (java.lang.Math/abs ((dbg-catch -) c d))))
+                                        ;((fn [x] (println x) x))
+       (apply +)))
+
+#_(sum-abs-diff [1 2 3] [1 2 3])
+
+(defn  get-pct-series
+  [nv & {yr-range :range}]
+  (let [range+ (or yr-range [1880 2013])]
+    (map (fn [y] (get-in nv [:yrs y :pct] 0))
+         (apply range range+))))
+
+(defn likeness [names a b]
+  (let [a-series (-> names (get a) get-pct-series)
+       b-series (-> names (get b) get-pct-series)]
+(sum-abs-diff a-series b-series)))
+
+(defn find-like
+  [names a]
+  (->> names
+       keys
+       (map (fn [k] [k (likeness names a k)]))
+       (sort (make-sort-fn < [1]))))
+
 (def n (:names @state))
 
 (def n1 (first n))
 
 (def n1-3 (take 3 n))
 
+(def n100 (select-keys n (->> n keys (take 100))))
+
 (def fst-yr (f- 1 :yrs-v first :yr))
 
 #_(q n
      :s [:name :gender :o (f- :v fst-yr)]
-     :f (every-pred (f- fst-yr < 1900) (f- 1 :yrs-v last :yr > 2000))
+     :f (every-pred (f- fst-yr < 1930) (f- 1 :yrs-v last :yr > 2000))
      :o (f- 1 :pct (m- :pct) (a- max))
      :d (nil-> 0 <)
      :l 30 :->str false)
 
 #_(q n :o #(-> % second :yrs-v first :yr) :l 30 :->str false)
+
 
 #_ (q n)
 
